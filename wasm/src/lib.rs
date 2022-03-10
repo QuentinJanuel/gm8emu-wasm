@@ -26,9 +26,11 @@ pub fn init() {
 pub async fn run(
     data: Vec<u8>,
     waiter: js_sys::Function,
-    on_frame: js_sys::Function,
+    // on_frame: js_sys::Function,
+    ctx: web_sys::CanvasRenderingContext2d,
     get_pressed: js_sys::Function,
     get_released: js_sys::Function,
+    play_music: js_sys::Function,
 ) -> i32 {
     gm8emulator::run(
         &data[..],
@@ -36,13 +38,14 @@ pub async fn run(
             log(msg);
         }),
         jsutils::JsWaiter::new(waiter),
-        Arc::new(move |data| {
-            let this = JsValue::null();
-            let data = JsValue::from_serde(&data)
-                .unwrap_or(JsValue::null());
-            on_frame.call1(&this, &data)
-                .expect("Failed to call on_frame");
-        }),
+        // Arc::new(move |data| {
+        //     let this = JsValue::null();
+        //     let data = JsValue::from_serde(&data)
+        //         .unwrap_or(JsValue::null());
+        //     on_frame.call1(&this, &data)
+        //         .expect("Failed to call on_frame");
+        // }),
+        ctx,
         Arc::new(move || {
             let this = JsValue::null();
             get_pressed.call0(&this)
@@ -52,6 +55,11 @@ pub async fn run(
             let this = JsValue::null();
             get_released.call0(&this)
                 .expect("Failed to call get_released")
+        }),
+        Arc::new(move |data: JsValue| {
+            let this = JsValue::null();
+            play_music.call1(&this, &data)
+                .expect("Failed to call play_music");
         }),
     ).await
 }
