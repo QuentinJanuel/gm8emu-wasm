@@ -36,12 +36,11 @@ export const App = function () {
 						ctx,
 						Inputs.getPressed,
 						Inputs.getReleased,
-						(id: number, data: Array<number> | 0, loop: boolean) => {
-							(async () => {
-								await Music.register(id, data);
-								Music.get(id)?.play(loop);
-							})().catch(console.error);
+						(musics: Array<{ id: number, data: Array<number> }>) => {
+							const loaders = musics.map(({ id, data }) => Music.register(id, data));
+							return Promise.all(loaders);
 						},
+						(id: number, loop: boolean) => Music.get(id)?.play(loop),
 						(id: number) => Music.get(id)?.stop(),
 						() => Music.stopAll(),
 					);

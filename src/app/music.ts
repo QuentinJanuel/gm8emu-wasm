@@ -3,10 +3,8 @@ interface List {
 }
 
 export class Music {
-    private _id: number;
     private _audio: HTMLAudioElement;
     public constructor(id: number, audio: HTMLAudioElement) {
-        this._id = id;
         this._audio = audio;
     }
     public get audio() {
