@@ -31,13 +31,13 @@ export const App = function () {
 					console.log("Running...");
 					const code = await run(
 						data,
-						(secs: number) => new Promise(
-							resolve => setTimeout(resolve, secs * 1000)
-						),
 						ctx,
 						Inputs.getPressed,
 						Inputs.getReleased,
 						audio,
+						(secs: number) => new Promise(
+							resolve => setTimeout(resolve, secs * 1000)
+						),
 					);
 					console.log(code);
 				})()

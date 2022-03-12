@@ -1,5 +1,4 @@
 use std::iter::FromIterator;
-
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 use js_sys::{
@@ -13,6 +12,11 @@ use gm8emulator::jsutils;
 
 #[wasm_bindgen(typescript_custom_section)]
 const IAUDIO: &'static str = r#"
+interface ISound {
+    id: number;
+    data: Array<number>;
+}
+
 interface IAudio {
     load: (sounds: Array<ISound>) => Promise<void>;
     play: (id: number, loop: boolean) => void;
@@ -26,6 +30,7 @@ extern "C" {
     #[wasm_bindgen(typescript_type = "IAudio")]
     pub type IAudio;
 }
+
 pub struct Audio {
     js_audio: IAudio,
 }

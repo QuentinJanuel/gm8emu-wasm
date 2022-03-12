@@ -1,7 +1,7 @@
 mod utils;
+mod time;
 
 use wasm_bindgen::prelude::*;
-use wasm_bindgen_futures::JsFuture;
 use gm8emulator::jsutils;
 use std::sync::Arc;
 
@@ -22,19 +22,19 @@ pub fn init() {
 #[wasm_bindgen]
 pub async fn run(
     data: Vec<u8>,
-    waiter: js_sys::Function,
     ctx: web_sys::CanvasRenderingContext2d,
     get_pressed: js_sys::Function,
     get_released: js_sys::Function,
     js_audio: audio::IAudio,
+    waiter: time::IWaiter,
 ) -> i32 {
     let audio = audio::Audio::from_js(js_audio);
+    let time = time::Time::new(waiter);
     gm8emulator::run(
         &data[..],
         Arc::new(|msg| {
             log(msg);
         }),
-        jsutils::JsWaiter::new(waiter),
         ctx,
         Arc::new(move || {
             let this = JsValue::null();
@@ -47,5 +47,6 @@ pub async fn run(
                 .expect("Failed to call get_released")
         }),
         Arc::new(audio),
+        Arc::new(time),
     ).await
 }
