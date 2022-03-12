@@ -17,6 +17,7 @@ wasm-bindgen-futures = "0.4.29"
 js-sys = "0.3.56"
 web-sys = { version = "0.3.56", features = [
     "CanvasRenderingContext2d",
+    "Window",
 ] }
 serde = "1.0.136"
 console_error_panic_hook = { version = "0.1.6", optional = true }

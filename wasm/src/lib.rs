@@ -2,7 +2,6 @@ mod utils;
 mod time;
 
 use wasm_bindgen::prelude::*;
-use gm8emulator::jsutils;
 use std::sync::Arc;
 
 mod audio;
@@ -26,10 +25,7 @@ pub async fn run(
     get_pressed: js_sys::Function,
     get_released: js_sys::Function,
     js_audio: audio::IAudio,
-    waiter: time::IWaiter,
 ) -> i32 {
-    let audio = audio::Audio::from_js(js_audio);
-    let time = time::Time::new(waiter);
     gm8emulator::run(
         &data[..],
         Arc::new(|msg| {
@@ -46,7 +42,7 @@ pub async fn run(
             get_released.call0(&this)
                 .expect("Failed to call get_released")
         }),
-        Arc::new(audio),
-        Arc::new(time),
+        Arc::new(audio::Audio::from_js(js_audio)),
+        Arc::new(time::Time),
     ).await
 }

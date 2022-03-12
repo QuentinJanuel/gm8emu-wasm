@@ -35,9 +35,6 @@ export const App = function () {
 						Inputs.getPressed,
 						Inputs.getReleased,
 						audio,
-						(secs: number) => new Promise(
-							resolve => setTimeout(resolve, secs * 1000)
-						),
 					);
 					console.log(code);
 				})()
