@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { init, run } from "wasm";
 import { Inputs } from "./inputs";
 import { load } from "./load";
-import { Music } from "./music";
+import { AudioPlayer } from "../wasm/audio-player";
+import { audio } from "../wasm/ffi/audio";
 
 import styles from "./index.module.scss";
 
@@ -36,13 +37,7 @@ export const App = function () {
 						ctx,
 						Inputs.getPressed,
 						Inputs.getReleased,
-						(musics: Array<{ id: number, data: Array<number> }>) => {
-							const loaders = musics.map(({ id, data }) => Music.register(id, data));
-							return Promise.all(loaders);
-						},
-						(id: number, loop: boolean) => Music.get(id)?.play(loop),
-						(id: number) => Music.get(id)?.stop(),
-						() => Music.stopAll(),
+						audio,
 					);
 					console.log(code);
 				})()
