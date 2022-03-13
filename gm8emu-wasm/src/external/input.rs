@@ -14,15 +14,15 @@ interface IInput {
 }
 "#;
 
-fn key_from_js(js_key: JsValue) -> gm8emulator::input::Button {
+fn key_from_js(js_key: JsValue) -> Option<gm8emulator::input::Button> {
     let js_key = js_key.as_string()
         .expect("Failed to convert js_key to string");
     match js_key.as_ref() {
-        "ArrowLeft" => gm8emulator::input::Button::LeftArrow,
-        "ArrowRight" => gm8emulator::input::Button::RightArrow,
-        "Shift" => gm8emulator::input::Button::Shift,
-        "r" => gm8emulator::input::Button::R,
-        _ => panic!("Unknown key: {}", js_key),
+        "ArrowLeft" => Some(gm8emulator::input::Button::LeftArrow),
+        "ArrowRight" => Some(gm8emulator::input::Button::RightArrow),
+        "Shift" => Some(gm8emulator::input::Button::Shift),
+        "r" => Some(gm8emulator::input::Button::R),
+        _ => None,
     }
 }
 
@@ -49,8 +49,9 @@ impl ext::input::Input for Input {
         let pressed = Function::from(pressed);
         let pressed = pressed.call0(&this)
             .expect("Failed to call pressed");
-        Array::from(&pressed).iter()
-            .map(key_from_js)
+        Array::from(&pressed)
+            .iter()
+            .filter_map(key_from_js)
             .collect()
     }
     fn released(&self) -> Vec<gm8emulator::input::Button> {
@@ -62,8 +63,9 @@ impl ext::input::Input for Input {
         let released = Function::from(released);
         let released = released.call0(&this)
             .expect("Failed to call released");
-        Array::from(&released).iter()
-            .map(key_from_js)
+        Array::from(&released)
+            .iter()
+            .filter_map(key_from_js)
             .collect()
     }
 }
