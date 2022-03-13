@@ -6,8 +6,11 @@ export * from "./audio";
 export * from "./input";
 export * from "./load";
 
-export const external: IExternal = {
-    verbose: true,
-    audio,
-    input,
-};
+export const getExternal = function(ctx: CanvasRenderingContext2D): IExternal {
+    return {
+        verbose: true,
+        audio,
+        input,
+        ctx,
+    };
+}

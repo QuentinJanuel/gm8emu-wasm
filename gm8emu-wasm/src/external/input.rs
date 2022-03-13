@@ -22,7 +22,6 @@ interface IInput {
 "#;
 
 fn key_from_js(js_key: JsValue) -> gm8emulator::input::Button {
-    let js_key = JsValue::from(js_key);
     let js_key = js_key.as_string()
         .expect("Failed to convert js_key to string");
     match js_key.as_ref() {

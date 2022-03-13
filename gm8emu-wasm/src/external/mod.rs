@@ -2,11 +2,12 @@ pub mod audio;
 pub mod time;
 pub mod logger;
 pub mod input;
+pub mod renderer;
 
 use std::sync::Arc;
 use gm8emulator::external as ext;
 use js_sys::Reflect;
-use wasm_bindgen::prelude::*;
+use wasm_bindgen::{prelude::*, JsCast};
 
 #[wasm_bindgen(typescript_custom_section)]
 const IEXTERNAL: &'static str = r#"
@@ -14,6 +15,7 @@ interface IExternal {
     verbose: boolean,
     audio: IAudio,
     input: IInput,
+    ctx: CanvasRenderingContext2d,
 }
 "#;
 
@@ -28,6 +30,7 @@ pub struct External {
     time: Arc<time::Time>,
     logger: Arc<logger::Logger>,
     input: Arc<input::Input>,
+    renderer: Arc<renderer::Renderer>,
 }
 
 impl External {
@@ -55,11 +58,19 @@ impl External {
             &JsValue::from("input"),
         ).unwrap();
         let input = input::Input::from_js(js_input);
+        let ctx = Reflect::get(
+            &js_external,
+            &JsValue::from("ctx"),
+        ).unwrap()
+            .dyn_into::<web_sys::CanvasRenderingContext2d>()
+            .unwrap();
+        let renderer = renderer::Renderer::new(ctx);
         Self {
             logger: Arc::new(logger),
             time: Arc::new(time),
             audio: Arc::new(audio),
             input: Arc::new(input),
+            renderer: Arc::new(renderer),
         }
     }
 }
@@ -76,5 +87,8 @@ impl ext::External for External {
     }
     fn input(&self) -> Arc<dyn ext::input::Input> {
         self.input.clone()
+    }
+    fn renderer(&self) -> Arc<dyn ext::renderer::Renderer> {
+        self.renderer.clone()
     }
 }

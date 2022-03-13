@@ -1,14 +1,22 @@
 import React, { useEffect } from "react";
 import { init, run } from "gm8emu-wasm";
 
-import { external, load, Inputs } from "../gm8emu";
+import { getExternal, load, Inputs } from "../gm8emu";
 
 import styles from "./index.module.scss";
 
 export const App = function () {
 	const canvas = React.useRef<HTMLCanvasElement>(null);
 	const [ctx, setCtx] = React.useState<CanvasRenderingContext2D>();
-	useEffect(() => init(external), []);
+	const [ready, setReady] = React.useState(false);
+	useEffect(() => {
+		if (!ctx)
+			return;
+		if (ready)
+			return;
+		init(getExternal(ctx));
+		setReady(true);
+	}, [ctx]);
 	useEffect(() => {
 		setCtx(canvas.current?.getContext("2d") ?? undefined);
 	}, [canvas]);
@@ -16,11 +24,11 @@ export const App = function () {
 		<button
 			onClick={ () => {
 				(async () => {
-					if (ctx === undefined)
+					if (!ready)
 						return;
 					const data = await load();
 					console.log("Running...");
-					console.log(await run(data, ctx));
+					console.log(await run(data));
 				})()
 				.catch(console.error);
 			} }

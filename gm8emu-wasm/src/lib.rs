@@ -14,10 +14,6 @@ pub fn init(js_external: external::IExternal) {
 #[wasm_bindgen]
 pub async fn run(
     data: Vec<u8>,
-    ctx: web_sys::CanvasRenderingContext2d,
 ) -> i32 {
-    gm8emulator::run(
-        &data[..],
-        ctx,
-    ).await
+    gm8emulator::run(&data[..]).await
 }
