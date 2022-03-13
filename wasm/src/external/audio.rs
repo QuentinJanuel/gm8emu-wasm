@@ -25,21 +25,15 @@ interface IAudio {
 }
 "#;
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(typescript_type = "IAudio")]
-    pub type IAudio;
-}
-
 pub struct Audio {
-    js_audio: IAudio,
+    js_audio: JsValue,
 }
 
 unsafe impl Sync for Audio {}
 unsafe impl Send for Audio {}
 
 impl Audio {
-    pub fn from_js(js_audio: IAudio) -> Self {
+    pub fn from_js(js_audio: JsValue) -> Self {
         Self { js_audio }
     }
 }

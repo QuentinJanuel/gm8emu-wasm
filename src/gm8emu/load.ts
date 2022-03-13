@@ -1,6 +1,6 @@
-export const load = function (): Promise<File> {
-	return new Promise(resolve => {
-		const input = document.createElement('input');
+export const load = async function (): Promise<Uint8Array> {
+	const file: File = await new Promise(resolve => {
+		const input = document.createElement("input");
 		input.type = "file";
 		input.multiple = false;
 		input.accept = ".map";
@@ -12,4 +12,6 @@ export const load = function (): Promise<File> {
 		};
 		input.click();
 	});
+	const buffer = await file.arrayBuffer();
+	return new Uint8Array(buffer);
 }

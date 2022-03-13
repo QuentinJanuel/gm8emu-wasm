@@ -1,23 +1,20 @@
 import React, { useEffect } from "react";
 import { init, run } from "wasm";
-import { Inputs } from "./inputs";
-import { load } from "./load";
-import { AudioPlayer } from "../wasm/audio-player";
-import { audio } from "../wasm/ffi/audio";
+
+import { load } from "../gm8emu/load";
+import { Inputs } from "../gm8emu/input";
+import { external } from "../gm8emu";
 
 import styles from "./index.module.scss";
 
 export const App = function () {
 	const canvas = React.useRef<HTMLCanvasElement>(null);
 	const [ctx, setCtx] = React.useState<CanvasRenderingContext2D>();
-	useEffect(init, []);
 	useEffect(() => {
-		if (canvas.current === null)
-			return;
-		const ctx = canvas.current.getContext("2d");
-		if (ctx === null)
-			return;
-		setCtx(ctx);
+		init(external);
+	}, []);
+	useEffect(() => {
+		setCtx(canvas.current?.getContext("2d") ?? undefined);
 	}, [canvas]);
 	return <div className={ styles.container }>
 		<button
@@ -25,19 +22,9 @@ export const App = function () {
 				(async () => {
 					if (ctx === undefined)
 						return;
-					const file = await load();
-					const buffer = await file.arrayBuffer();
-					const data = new Uint8Array(buffer);
+					const data = await load();
 					console.log("Running...");
-					const code = await run(
-						data,
-						true,
-						ctx,
-						Inputs.getPressed,
-						Inputs.getReleased,
-						audio,
-					);
-					console.log(code);
+					console.log(await run(data, ctx));
 				})()
 				.catch(console.error);
 			} }
@@ -46,33 +33,9 @@ export const App = function () {
 			ref={ canvas }
 			width={ 800 }
 			height={ 608 }
-			style={{
-				border: "1px solid black",
-			}}
-			onKeyDown={ (e) => {
-				if (Inputs.getPressedJS(e.key))
-					return;
-				Inputs.setPressedJS(e.key, true);
-				if (e.key === "Shift")
-					Inputs.pushPressed("jump");
-				if (e.key === "ArrowLeft")
-					Inputs.pushPressed("left");
-				if (e.key === "ArrowRight")
-					Inputs.pushPressed("right");
-				if (e.key === "r")
-					Inputs.pushPressed("r");
-			} }
-			onKeyUp={ (e) => {
-				Inputs.setPressedJS(e.key, false);
-				if (e.key === "Shift")
-					Inputs.pushReleased("jump");
-				if (e.key === "ArrowLeft")
-					Inputs.pushReleased("left");
-				if (e.key === "ArrowRight")
-					Inputs.pushReleased("right");
-				if (e.key === "r")
-					Inputs.pushReleased("r");
-			} }
+			style={ { border: "1px solid black" } }
+			onKeyDown={ e => Inputs.onKeyDown(e.key) }
+			onKeyUp={ e => Inputs.onKeyUp(e.key) }
 			tabIndex={ 0 }
 		></canvas>
 	</div>;

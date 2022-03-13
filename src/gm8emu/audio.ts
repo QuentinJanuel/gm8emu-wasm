@@ -1,4 +1,4 @@
-import { AudioPlayer } from "../audio-player";
+import { AudioPlayer } from "../audio";
 import { IAudio } from "wasm";
 
 export const audio: IAudio = {

@@ -9,6 +9,7 @@ extern {
     fn error(s: &str);
 }
 
+#[allow(dead_code)]
 pub enum VerboseLevel {
     None,
     Error,
