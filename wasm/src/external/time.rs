@@ -1,4 +1,4 @@
-use gm8emulator::jsutils;
+use gm8emulator::external as ext;
 use std::time;
 use js_sys::{
     Promise,
@@ -8,12 +8,12 @@ use wasm_bindgen_futures::JsFuture;
 
 pub struct Time;
 
-impl jsutils::Time for Time {
+impl ext::time::Time for Time {
     fn now_as_timestamp_nanos(&self) -> u128 {
         let now = Date::now() as u128;
         now * 1_000_000
     }
-    fn wait(&self, dur: time::Duration) -> jsutils::Fut {
+    fn wait(&self, dur: time::Duration) -> ext::Fut {
         let secs = dur.as_secs() as f64;
         let nanos = dur.subsec_nanos() as f64;
         let ms = (secs * 1_000.0) + (nanos / 1_000_000.0);

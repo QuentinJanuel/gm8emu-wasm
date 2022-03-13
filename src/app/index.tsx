@@ -31,6 +31,7 @@ export const App = function () {
 					console.log("Running...");
 					const code = await run(
 						data,
+						true,
 						ctx,
 						Inputs.getPressed,
 						Inputs.getReleased,

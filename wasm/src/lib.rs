@@ -1,17 +1,9 @@
 mod utils;
-mod time;
+mod external;
 
 use wasm_bindgen::prelude::*;
+use external as ext;
 use std::sync::Arc;
-
-mod audio;
-
-#[wasm_bindgen]
-extern {
-    fn alert(s: &str);
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
-}
 
 #[wasm_bindgen]
 pub fn init() {
@@ -21,16 +13,19 @@ pub fn init() {
 #[wasm_bindgen]
 pub async fn run(
     data: Vec<u8>,
+    verbose: bool,
     ctx: web_sys::CanvasRenderingContext2d,
     get_pressed: js_sys::Function,
     get_released: js_sys::Function,
-    js_audio: audio::IAudio,
+    js_audio: ext::audio::IAudio,
 ) -> i32 {
+    let external = ext::External::new(
+        verbose,
+        js_audio,
+    );
+    gm8emulator::external::init(external);
     gm8emulator::run(
         &data[..],
-        Arc::new(|msg| {
-            log(msg);
-        }),
         ctx,
         Arc::new(move || {
             let this = JsValue::null();
@@ -42,7 +37,5 @@ pub async fn run(
             get_released.call0(&this)
                 .expect("Failed to call get_released")
         }),
-        Arc::new(audio::Audio::from_js(js_audio)),
-        Arc::new(time::Time),
     ).await
 }

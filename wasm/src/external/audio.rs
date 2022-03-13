@@ -8,7 +8,7 @@ use js_sys::{
     Array,
     Object,
 };
-use gm8emulator::jsutils;
+use gm8emulator::external as ext;
 
 #[wasm_bindgen(typescript_custom_section)]
 const IAUDIO: &'static str = r#"
@@ -35,13 +35,16 @@ pub struct Audio {
     js_audio: IAudio,
 }
 
+unsafe impl Sync for Audio {}
+unsafe impl Send for Audio {}
+
 impl Audio {
     pub fn from_js(js_audio: IAudio) -> Self {
         Self { js_audio }
     }
 }
 
-fn sound_to_js(sound: &jsutils::Sound) -> JsValue {
+fn sound_to_js(sound: &ext::audio::Sound) -> JsValue {
     let id = JsValue::from(sound.id);
     let data = JsValue::from_serde(&sound.data).unwrap();
     let js_sound = Object::new();
@@ -58,8 +61,8 @@ fn sound_to_js(sound: &jsutils::Sound) -> JsValue {
     JsValue::from(js_sound)
 }
 
-impl jsutils::Audio for Audio {
-    fn load(&self, sounds: Vec<jsutils::Sound>) -> jsutils::Fut {
+impl ext::audio::Audio for Audio {
+    fn load(&self, sounds: Vec<ext::audio::Sound>) -> ext::Fut {
         let this = JsValue::null();
         let load = Reflect::get(
             &self.js_audio,
