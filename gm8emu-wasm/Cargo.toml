@@ -1,5 +1,5 @@
 [package]
-name = "wasm"
+name = "gm8emu-wasm"
 version = "0.1.0"
 authors = ["DapperMink <quentinjanuelkij@gmail.com>"]
 edition = "2018"

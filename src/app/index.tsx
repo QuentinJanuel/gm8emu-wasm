@@ -1,18 +1,14 @@
 import React, { useEffect } from "react";
-import { init, run } from "wasm";
+import { init, run } from "gm8emu-wasm";
 
-import { load } from "../gm8emu/load";
-import { Inputs } from "../gm8emu/input";
-import { external } from "../gm8emu";
+import { external, load, Inputs } from "../gm8emu";
 
 import styles from "./index.module.scss";
 
 export const App = function () {
 	const canvas = React.useRef<HTMLCanvasElement>(null);
 	const [ctx, setCtx] = React.useState<CanvasRenderingContext2D>();
-	useEffect(() => {
-		init(external);
-	}, []);
+	useEffect(() => init(external), []);
 	useEffect(() => {
 		setCtx(canvas.current?.getContext("2d") ?? undefined);
 	}, [canvas]);

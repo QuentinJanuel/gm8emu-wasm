@@ -1,5 +1,5 @@
 import { AudioPlayer } from "../audio";
-import { IAudio } from "wasm";
+import { IAudio } from "gm8emu-wasm";
 
 export const audio: IAudio = {
     load: async sounds => {

@@ -30,6 +30,6 @@
   "dependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "wasm": "file:./wasm/pkg"
+    "gm8emu-wasm": "file:./gm8emu-wasm/pkg"
   }
 }

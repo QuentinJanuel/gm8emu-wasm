@@ -1,4 +1,4 @@
-import { IKey, IInput } from "wasm";
+import { IKey, IInput } from "gm8emu-wasm";
 
 export class Inputs {
 	private static pressedBuffer: Array<IKey> = [];
