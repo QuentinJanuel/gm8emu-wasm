@@ -8,16 +8,9 @@ use js_sys::{
 
 #[wasm_bindgen(typescript_custom_section)]
 const IINPUT: &'static str = r#"
-type IKey =
-    | "Left"
-    | "Right"
-    | "Shift"
-    | "R"
-;
-
 interface IInput {
-    pressed: () => Array<IKey>;
-    released: () => Array<IKey>;
+    pressed: () => Array<string>;
+    released: () => Array<string>;
 }
 "#;
 
@@ -25,10 +18,10 @@ fn key_from_js(js_key: JsValue) -> gm8emulator::input::Button {
     let js_key = js_key.as_string()
         .expect("Failed to convert js_key to string");
     match js_key.as_ref() {
-        "Left" => gm8emulator::input::Button::LeftArrow,
-        "Right" => gm8emulator::input::Button::RightArrow,
+        "ArrowLeft" => gm8emulator::input::Button::LeftArrow,
+        "ArrowRight" => gm8emulator::input::Button::RightArrow,
         "Shift" => gm8emulator::input::Button::Shift,
-        "R" => gm8emulator::input::Button::R,
+        "r" => gm8emulator::input::Button::R,
         _ => panic!("Unknown key: {}", js_key),
     }
 }
