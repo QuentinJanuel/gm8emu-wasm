@@ -4,10 +4,16 @@ pub mod logger;
 pub mod input;
 pub mod renderer;
 
-use std::sync::Arc;
+use std::sync::{
+    Arc,
+    Mutex,
+};
 use gm8emulator::external as ext;
 use js_sys::Reflect;
-use wasm_bindgen::{prelude::*, JsCast};
+use wasm_bindgen::{
+    prelude::*,
+    JsCast,
+};
 
 #[wasm_bindgen(typescript_custom_section)]
 const IEXTERNAL: &'static str = r#"
@@ -30,7 +36,7 @@ pub struct External {
     time: Arc<time::Time>,
     logger: Arc<logger::Logger>,
     input: Arc<input::Input>,
-    renderer: Arc<renderer::Renderer>,
+    renderer: Arc<Mutex<renderer::Renderer>>,
 }
 
 impl External {
@@ -70,7 +76,7 @@ impl External {
             time: Arc::new(time),
             audio: Arc::new(audio),
             input: Arc::new(input),
-            renderer: Arc::new(renderer),
+            renderer: Arc::new(Mutex::new(renderer)),
         }
     }
 }
@@ -88,7 +94,7 @@ impl ext::External for External {
     fn input(&self) -> Arc<dyn ext::input::Input> {
         self.input.clone()
     }
-    fn renderer(&self) -> Arc<dyn ext::renderer::Renderer> {
+    fn renderer(&self) -> Arc<Mutex<dyn ext::renderer::Renderer>> {
         self.renderer.clone()
     }
 }

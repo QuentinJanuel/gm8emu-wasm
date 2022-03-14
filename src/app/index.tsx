@@ -20,6 +20,13 @@ export const App = function () {
 	useEffect(() => {
 		setCtx(canvas.current?.getContext("2d") ?? undefined);
 	}, [canvas]);
+	// useEffect(() => {
+	// 	if (!ctx)
+	// 		return;
+	// 	const array = new Uint8ClampedArray(texture);
+	// 	const image = new ImageData(array, array.length / 4 / 480);
+	// 	ctx.putImageData(image, 0, 0);
+	// }, [ctx]);
 	return <div className={ styles.container }>
 		<button
 			onClick={ () => {

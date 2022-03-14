@@ -18,6 +18,10 @@ js-sys = "0.3.56"
 web-sys = { version = "0.3.56", features = [
     "CanvasRenderingContext2d",
     "Window",
+    "ImageData",
+    "Document",
+    "Element",
+    "HtmlCanvasElement",
 ] }
 serde = "1.0.136"
 console_error_panic_hook = { version = "0.1.6", optional = true }
